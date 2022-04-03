@@ -9,6 +9,7 @@ from models.gat_gcn import GAT_GCN
 from models.gcn import GCNNet
 from models.ginconv import GINConvNet
 from utils import *
+from sklearn.metrics import roc_auc_score
 
 # training function at each epoch
 def train(model, device, train_loader, optimizer, epoch):
@@ -42,7 +43,7 @@ def predicting(model, device, loader):
     return total_labels.numpy().flatten(),total_preds.numpy().flatten()
 
 
-datasets = [['davis','kiba'][int(sys.argv[1])]] 
+datasets = [['davis','kiba','fragalysis'][int(sys.argv[1])]] 
 modeling = [GINConvNet, GATNet, GAT_GCN, GCNNet][int(sys.argv[2])]
 model_st = modeling.__name__
 
@@ -78,25 +79,22 @@ for dataset in datasets:
         # training the model
         device = torch.device(cuda_name if torch.cuda.is_available() else "cpu")
         model = modeling().to(device)
-        loss_fn = nn.MSELoss()
+        loss_fn = nn.BCELoss()
         optimizer = torch.optim.Adam(model.parameters(), lr=LR)
-        best_mse = 1000
-        best_ci = 0
-        best_epoch = -1
+        best_auc = 0
         model_file_name = 'model_' + model_st + '_' + dataset +  '.model'
         result_file_name = 'result_' + model_st + '_' + dataset +  '.csv'
         for epoch in range(NUM_EPOCHS):
             train(model, device, train_loader, optimizer, epoch+1)
             G,P = predicting(model, device, test_loader)
-            ret = [rmse(G,P),mse(G,P),pearson(G,P),spearman(G,P),ci(G,P)]
-            if ret[1]<best_mse:
+            ret = [roc_auc_score(G,P)]
+            if ret[0]>best_auc:
                 torch.save(model.state_dict(), model_file_name)
                 with open(result_file_name,'w') as f:
                     f.write(','.join(map(str,ret)))
                 best_epoch = epoch+1
-                best_mse = ret[1]
-                best_ci = ret[-1]
-                print('rmse improved at epoch ', best_epoch, '; best_mse,best_ci:', best_mse,best_ci,model_st,dataset)
+                best_auc = ret[0]
+                print('AUC improved at epoch ', best_epoch, '; best_auc:', best_auc, model_st, dataset)
             else:
-                print(ret[1],'No improvement since epoch ', best_epoch, '; best_mse,best_ci:', best_mse,best_ci,model_st,dataset)
+                print(ret[0], 'No improvement since epoch ', best_epoch, '; best_auc:', best_auc, model_st, dataset)
 

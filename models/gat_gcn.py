@@ -61,4 +61,4 @@ class GAT_GCN(torch.nn.Module):
         xc = self.relu(xc)
         xc = self.dropout(xc)
         out = self.out(xc)
-        return out
+        return F.sigmoid(out)
