@@ -55,8 +55,8 @@ def seq_cat(prot):
 
 # from DeepDTA data
 all_prots = []
-datasets = ['kiba','davis']
-datasets=['Fragalysis']
+# datasets = ['kiba','davis']
+datasets=['Fragalysis', 'PDBbind']
 
 for dataset in datasets:
     print('convert data from DeepDTA for ', dataset)
@@ -106,7 +106,7 @@ max_seq_len = 1000
 
 compound_iso_smiles = []
 # for dt_name in ['kiba','davis']:
-for dt_name in ['Fragalysis']:
+for dt_name in ['Fragalysis', 'PDBbind']:
     opts = ['train','test']
     for opt in opts:
         df = pd.read_csv('data/' + dt_name + '_' + opt + '.csv')
@@ -117,8 +117,8 @@ for smile in compound_iso_smiles:
     g = smile_to_graph(smile)
     smile_graph[smile] = g
 
-datasets = ['davis','kiba']
-datasets=['Fragalysis']
+# datasets = ['davis','kiba']
+datasets=['Fragalysis', 'PDBbind']
 # convert to PyTorch data format
 for dataset in datasets:
     processed_data_file_train = 'data/processed/' + dataset + '_train.pt'

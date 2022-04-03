@@ -43,7 +43,8 @@ def predicting(model, device, loader):
     return total_labels.numpy().flatten(),total_preds.numpy().flatten()
 
 
-datasets = [['davis','kiba','Fragalysis'][int(sys.argv[1])]] 
+# datasets = [['davis','kiba'][int(sys.argv[1])]]
+datasets = [['Fragalysis', 'PDBbind'][int(sys.argv[1])]]
 modeling = [GINConvNet, GATNet, GAT_GCN, GCNNet][int(sys.argv[2])]
 model_st = modeling.__name__
 
@@ -56,7 +57,10 @@ TRAIN_BATCH_SIZE = 512
 TEST_BATCH_SIZE = 512
 LR = 0.0005
 LOG_INTERVAL = 20
-NUM_EPOCHS = 1000
+if len(sys.argv) == 5:
+    NUM_EPOCHS = int(sys.argv[4])
+else:
+    NUM_EPOCHS = 1000
 
 print('Learning rate: ', LR)
 print('Epochs: ', NUM_EPOCHS)
