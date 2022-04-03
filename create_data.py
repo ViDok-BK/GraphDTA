@@ -62,7 +62,7 @@ for dataset in datasets:
     print('convert data from DeepDTA for ', dataset)
     fpath = 'data/' + dataset + '/'
     train_fold = json.load(open(fpath + "folds/train_fold_setting1.txt"))
-    train_fold = [ee for e in train_fold for ee in e ]
+    train_fold = [ee for ee in train_fold]
     valid_fold = json.load(open(fpath + "folds/test_fold_setting1.txt"))
     ligands = json.load(open(fpath + "ligands_can.txt"), object_pairs_hook=OrderedDict)
     proteins = json.load(open(fpath + "proteins.txt"), object_pairs_hook=OrderedDict)

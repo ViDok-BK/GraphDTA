@@ -63,4 +63,4 @@ class GATNet(torch.nn.Module):
         xc = self.relu(xc)
         xc = self.dropout(xc)
         out = self.out(xc)
-        return out
+        return torch.sigmoid(out)
