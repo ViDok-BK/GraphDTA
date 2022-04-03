@@ -79,7 +79,7 @@ for dataset in datasets:
     affinity = np.asarray(affinity)
     opts = ['train','test']
     for opt in opts:
-        rows, cols = np.where(affinity >= 0.5)  
+        rows, cols = np.where(np.isnan(affinity)==False) 
         if opt=='train':
             rows,cols = rows[train_fold], cols[train_fold]
         elif opt=='test':
